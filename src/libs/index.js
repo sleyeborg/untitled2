@@ -1,62 +1,53 @@
 import * as THREE from 'three';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { createScene } from '../controllers.js';
 
-let camera, scene, renderer, controls, cube, whiteCube;
+const scene = createScene();
 
-init();
-animate();
+const renderer = new THREE.WebGLRenderer( { antialias: true } );
+renderer.setPixelRatio( window.devicePixelRatio );
+renderer.setSize( window.innerWidth, window.innerHeight );
+renderer.xr.enabled = true;
+document.body.appendChild( VRButton.createButton( renderer ) );
+document.body.appendChild( renderer.domElement );
 
-function init() {
-    // Renderer
-    renderer = new THREE.WebGLRenderer( { antialias: true } );
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    renderer.xr.enabled = true;
-    document.body.appendChild( VRButton.createButton( renderer ) );
-    document.body.appendChild( renderer.domElement );
+// Camera
+const camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 10 );
+camera.position.set( 0, 1.6, 3 );
 
-    // Scene
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0x808080 );
+// Controls
+const controls = new OrbitControls( camera, renderer.domElement );
+controls.target.set( 0, 1.6, 0 );
+controls.update();
 
-    // Camera
-    camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 10 );
-    camera.position.set( 0, 1.6, 3 );
+// Cube
+const geometry = new THREE.BoxGeometry();
+const material = new THREE.MeshStandardMaterial( { color: 0xff0000 } );
+const cube = new THREE.Mesh( geometry, material );
+cube.position.y = 1;
+scene.add( cube );
 
-    // Controls
-    controls = new OrbitControls( camera, renderer.domElement );
-    controls.target.set( 0, 1.6, 0 );
-    controls.update();
+// White Cube
+const whiteCubeGeometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+const whiteCubeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+const whiteCube = new THREE.Mesh(whiteCubeGeometry, whiteCubeMaterial);
+whiteCube.position.y = 1.5;
+cube.add(whiteCube);
 
-    // Cube
-    const geometry = new THREE.BoxGeometry();
-    const material = new THREE.MeshStandardMaterial( { color: 0xff0000 } );
-    cube = new THREE.Mesh( geometry, material );
-    cube.position.y = 1;
-    scene.add( cube );
+// Lights
+const light = new THREE.PointLight();
+light.position.set( 0, 2, 2 );
+camera.add( light );
+scene.add( camera );
 
-    // White Cube
-    const whiteCubeGeometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-    const whiteCubeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-    whiteCube = new THREE.Mesh(whiteCubeGeometry, whiteCubeMaterial);
-    whiteCube.position.y = 1.5;
-    cube.add(whiteCube);
+// Event listeners
+window.addEventListener( 'resize', onWindowResize );
+document.addEventListener( 'keydown', onDocumentKeyDown );
 
-    // Lights
-    const light = new THREE.PointLight();
-    light.position.set( 0, 2, 2 );
-    camera.add( light );
-    scene.add( camera );
-
-    // Event listeners
-    window.addEventListener( 'resize', onWindowResize );
-    document.addEventListener( 'keydown', onDocumentKeyDown );
-
-    // XR
-    renderer.xr.addEventListener( 'sessionstart', onSessionStart );
-    renderer.xr.addEventListener( 'sessionend', onSessionEnd );
-}
+// XR
+renderer.xr.addEventListener( 'sessionstart', onSessionStart );
+renderer.xr.addEventListener( 'sessionend', onSessionEnd );
 
 function animate() {
     renderer.setAnimationLoop( render );
@@ -105,3 +96,5 @@ function onDocumentKeyDown( event ) {
             break;
     }
 }
+
+animate();
