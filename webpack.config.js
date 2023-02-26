@@ -12,8 +12,10 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin({cleanOnceBeforeBuildPatterns: ['*.js']}),
         new HtmlWebpackPlugin({
-            template: 'index.html',
-            hash : 'true'
+            template: './index.html',
+            hash : 'true',
+
+
         })
 
     ]
