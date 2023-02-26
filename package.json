@@ -1,0 +1,31 @@
+{
+  "name": "untitled2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./index.js",
+  "scripts": {
+    "build": "npx webpack",
+    "start": "kill-port 8080 && http-server ./dist -p 8080",
+    "test": "npx jest",
+    "test:watch": "npx jest --watch",
+    "test:coverage": "npx jest --coverage",
+    "lint": "npx eslint .",
+    "lint:fix": "npx eslint . --fix",
+    "prettier": "npx prettier --write .",
+    "prettier:check": "npx prettier --check .",
+    "validate": "npm run lint && npm run test && npm run prettier:check"
+  },
+  "keywords": [],
+  "author": "frmr",
+  "license": "ISC",
+  "devDependencies": {
+    "clean-webpack-plugin": "^4.0.0",
+    "html-webpack-plugin": "^5.5.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.11.1",
+    "webpack-md5-hash": "^0.0.6"
+  },
+  "dependencies": {
+    "three": "^0.150.0"
+  }
+}
