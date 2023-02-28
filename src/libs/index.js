@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { setupKeyControls, getKeys } from '../controls.js';
+
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -12,13 +14,13 @@ const planetMaterial = new THREE.MeshBasicMaterial({ color: '#aa11ff' });
 const planet = new THREE.Mesh(planetGeometry, planetMaterial);
 
 const meshGeometry = new THREE.SphereGeometry(50, 32, 32);
-const meshMaterial = new THREE.MeshBasicMaterial({ color: '#5ada95' });
+const meshMaterial = new THREE.MeshBasicMaterial({ color: '#5ada95',wireframe:true });
 const mesh = new THREE.Mesh(meshGeometry, meshMaterial);
 
 planet.add(mesh);
 
-planet.position.set(10, 10, 10);
-camera.lookAt(10, 10, 10);
+planet.position.set(0, 0, 0);
+camera.lookAt(0, 0, 0);
 const scene = new THREE.Scene();
 
 // Add a skybox
@@ -119,12 +121,34 @@ const clock = new THREE.Clock();
 function render() {
     renderer.render(scene, camera);
 }
-
+function getElapsedTime() {
+    return clock.getElapsedTime();
+}
+setupKeyControls();
 function animate() {
-    requestAnimationFrame(animate); // Call this function again on the next frame
-   // const elapsedTime = clock.getElapsedTime(); // Get the time elapsed since the last frame
-    //planet.rotation.y = elapsedTime +=1  ; // Rotate the planet around the y-axis
-    //mesh.rotation.y = elapsedTime *3.1; // Rotate the mesh around the y-axis
+    let keyBuffer = getKeys();
+
+
+    const elapsedTime = clock.getElapsedTime(); // Get the time elapsed since the last frame
+    //planet.rotation.y = elapsedTime *=1  ; // Rotate the planet around the y-axis
+    mesh.rotation.y = elapsedTime *0.3; // Rotate the mesh around the y-axis
+    const speed = 0.01;
+    if (keyBuffer.includes(37)) { // left arrow
+        planet.rotation.y += speed;
+    }
+    if (keyBuffer.includes(38)) { // up arrow
+        planet.rotation.x += speed;
+    }
+    if (keyBuffer.includes(39)) { // right arrow
+        planet.rotation.y -= speed;
+    }
+    if (keyBuffer.includes(40)) { // down arrow
+        planet.rotation.x -= speed;
+    }
+    //const keys = getKeys();
+    //console.log(keys);
     renderer.render(scene, camera);
+    requestAnimationFrame(animate); // Call this function again on the next frame
+
 }
 animate();
