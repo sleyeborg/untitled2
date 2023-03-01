@@ -1,27 +1,23 @@
 import * as THREE from 'three';
-import { setupKeyControls, getKeys } from '../controls.js';
+// index.js
+
+import { getCntrlflags, onKeyUp, onKeyDown } from './controls.js';
+
+// ...
+
 
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-
-const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+document.addEventListener('keydown', onKeyDown);
+document.addEventListener('keyup', onKeyUp);
+const canvas = document.createElement('canvas');
+const context = canvas.getContext('2d');
+canvas.width = canvas.height = 3;
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth/innerHeight, 0.1, 1000);
 camera.position.set(0, 0, 2);
-
-const planetGeometry = new THREE.SphereGeometry(1, 32, 32);
-const planetMaterial = new THREE.MeshBasicMaterial({ color: '#aa11ff' });
-const planet = new THREE.Mesh(planetGeometry, planetMaterial);
-
-const meshGeometry = new THREE.SphereGeometry(50, 32, 32);
-const meshMaterial = new THREE.MeshBasicMaterial({ color: '#5ada95',wireframe:true });
-const mesh = new THREE.Mesh(meshGeometry, meshMaterial);
-
-planet.add(mesh);
-
-planet.position.set(0, 0, 0);
-camera.lookAt(0, 0, 0);
-const scene = new THREE.Scene();
+const imageData = context.createImageData(3, 3);
 
 // Add a skybox
 // Define the vertex shader
@@ -57,10 +53,7 @@ const svgMatrix = [  [1, 0, 1],
 ];
 
 // Create a canvas and context for generating the SVG texture
-const canvas = document.createElement('canvas');
-const context = canvas.getContext('2d');
-canvas.width = canvas.height = 3;
-const imageData = context.createImageData(3, 3);
+
 
 // Loop through the SVG matrix and set the pixel data
 for (let y = 0; y < 3; y++) {
@@ -73,6 +66,21 @@ for (let y = 0; y < 3; y++) {
         imageData.data[index + 3] = 255;
     }
 }
+const scene = new THREE.Scene();
+
+const planetGeometry = new THREE.SphereGeometry(1, 32, 32);
+const planetMaterial = new THREE.MeshBasicMaterial({ color: '#aa11ff' });
+const planet = new THREE.Mesh(planetGeometry, planetMaterial);
+
+const meshGeometry = new THREE.SphereGeometry(50, 32, 32);
+const meshMaterial = new THREE.MeshBasicMaterial({ color: '#5ada95',wireframe:true });
+const mesh = new THREE.Mesh(meshGeometry, meshMaterial);
+
+planet.add(mesh);
+
+planet.position.set(1, 1, 5);
+camera.lookAt(0, 2, 5);
+
 
 // Create the texture and set the pixel data
 const texture = new THREE.CanvasTexture(canvas);
@@ -94,27 +102,31 @@ const skyGeometry = new THREE.BoxGeometry(1000, 1000, 1000);
 
 // Create the skybox mesh
 const sky = new THREE.Mesh(skyGeometry, skyMaterial);
-scene.add(planet);
-
-// Add the skybox to the scene
-scene.add(sky);
 
 // Add a floor plane
 const groundGeometry = new THREE.PlaneGeometry(10, 10, 1, 1);
 const groundMaterial = new THREE.MeshBasicMaterial({ color: '#5E5E5E' }); // Gray color
 const ground = new THREE.Mesh(groundGeometry, groundMaterial);
 ground.rotation.x = -Math.PI / 2; // Rotate to lie flat on the ground
-scene.add(ground);
 
 // Add a blue point light
-const pointLight1 = new THREE.PointLight(0x12BFaF, 0,3, 100);
+const pointLight1 = new THREE.PointLight(0x12BFaF, 0.3, 100);
 pointLight1.position.set(10, 5, 400);
-scene.add(pointLight1);
 
 // Add a purple directional light
 const dirLight = new THREE.DirectionalLight(0xaa99bF, 0.2);
 dirLight.position.set(0, 100, 1);
+
 scene.add(dirLight);
+scene.add(pointLight1);
+scene.add(ground);
+scene.add(planet);
+scene.add(sky);
+
+
+
+
+
 
 const clock = new THREE.Clock();
 
@@ -124,31 +136,71 @@ function render() {
 function getElapsedTime() {
     return clock.getElapsedTime();
 }
-setupKeyControls();
+function getCurrentTime() {
+    return performance.now() - clock.start();
+}
+//setupKeyControls();
+//const keyCombos = getKeys();
+
+const fps = 54; // target frame rate
+const interval = 1000 / fps; // time interval in ms per frame
+
+let previousTime = 0;
+let lag = 0;
 function animate() {
-    let keyBuffer = getKeys();
-
-
-    const elapsedTime = clock.getElapsedTime(); // Get the time elapsed since the last frame
-    //planet.rotation.y = elapsedTime *=1  ; // Rotate the planet around the y-axis
-    mesh.rotation.y = elapsedTime *0.3; // Rotate the mesh around the y-axis
-    const speed = 0.01;
-    if (keyBuffer.includes(37)) { // left arrow
-        planet.rotation.y += speed;
-    }
-    if (keyBuffer.includes(38)) { // up arrow
-        planet.rotation.x += speed;
-    }
-    if (keyBuffer.includes(39)) { // right arrow
-        planet.rotation.y -= speed;
-    }
-    if (keyBuffer.includes(40)) { // down arrow
-        planet.rotation.x -= speed;
-    }
-    //const keys = getKeys();
-    //console.log(keys);
-    renderer.render(scene, camera);
     requestAnimationFrame(animate); // Call this function again on the next frame
 
+    let cf = getCntrlflags();
+    const elapsedTime = clock.getElapsedTime(); // Get the time elapsed since the last frame
+    const currentTime = getCurrentTime();
+    const elapsed = currentTime - previousTime;
+    previousTime = currentTime;
+    lag += elapsed;
+
+    while (lag >= interval) {
+        // update game state and render
+        //update();
+        render();
+
+        lag -= interval;
+    }
+
+    const keybuffer = [];
+    keybuffer.push(cf);
+
+    //planet.rotation.y = elapsedTime *=1  ; // Rotate the planet around the y-axis
+    planet.rotation.y = elapsedTime *0.03; // Rotate the mesh around the y-axis
+    const speed = 0.01;
+
+    if ((cf.forward==true)) {
+        //move camera incrementally
+        camera.position.z -= 0.1;
+        //planet.rotation.x += 0;
+    }
+    if ((cf.backward==true)) {
+        camera.position.z += 0.1;
+        camera.rotateOnWorldAxis(new THREE.Vector3(1, 1, 0), 0.3);
+      //  planet.rotation.x += speed;
+    }
+    if ((cf.left==true)) {
+        camera.position.x -= 0.1;
+    //    planet.rotation.x -= speed;
+    }
+    if ((cf.right==true)) {
+        camera.position.x += 0.1;
+   //     planet.rotation.x -= speed;
+    }
+    if(cf.arrup==true){
+        camera.position.y += 0.1;
+
+    }
+    if(keybuffer){console.log(keybuffer[0])}
+
+
+    renderer.render(scene, camera);
 }
+
+
+
+
 animate();
