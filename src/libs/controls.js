@@ -1,4 +1,4 @@
-// controls.js//sos
+// controls.js
 
 let cntrlflags = {
     forward: false,
