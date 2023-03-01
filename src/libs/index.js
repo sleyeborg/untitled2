@@ -1,24 +1,25 @@
 import * as THREE from 'three';
+import { handleKeyDown, handleKeyUp } from "../eventHandlers.js";
 // index.js
 
 import { getCntrlflags, onKeyUp, onKeyDown } from './controls.js';
 
 // ...
-
-
-
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 document.addEventListener('keydown', onKeyDown);
 document.addEventListener('keyup', onKeyUp);
 const canvas = document.createElement('canvas');
-const context = canvas.getContext('2d');
+//const context = canvas.getContext('2d');
 canvas.width = canvas.height = 3;
-const camera = new THREE.PerspectiveCamera(50, window.innerWidth/innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(50, canvas.width/canvas.height, 0.1, 1000);
 camera.position.set(0, 0, 2);
-const imageData = context.createImageData(3, 3);
 
+
+
+//const imageData = context.createImageData(3, 3);
+/*
 // Add a skybox
 // Define the vertex shader
 const skyVertexShader = `
@@ -44,19 +45,19 @@ const skyFragmentShader = `
     // Set the final color of the fragment
     gl_FragColor = vec4(vec3(grayscale), 1.0);
   }
-`;
-
+`;*/
+/*
 // Define the SVG matrix as a 3x3 array
 const svgMatrix = [  [1, 0, 1],
     [0, 1, 0],
     [1, 0, 1]
-];
+];*/
 
 // Create a canvas and context for generating the SVG texture
 
 
 // Loop through the SVG matrix and set the pixel data
-for (let y = 0; y < 3; y++) {
+/*for (let y = 0; y < 3; y++) {
     for (let x = 0; x < 3; x++) {
         const value = svgMatrix[y][x] ? 255 : 0;
         const index = (y * 3 + x) * 4;
@@ -65,11 +66,29 @@ for (let y = 0; y < 3; y++) {
         imageData.data[index + 2] = value;
         imageData.data[index + 3] = 255;
     }
-}
+}*/
+
+
+// Create the texture and set the pixel data
+//const texture = new THREE.CanvasTexture(canvas);
+//texture.needsUpdate = true;
+//texture.image = imageData;
+/*
+// Create the shader material
+const skyMaterial = new THREE.ShaderMaterial({
+    vertexShader: skyVertexShader,
+    fragmentShader: skyFragmentShader,
+    side: THREE.BackSide,
+    uniforms: {
+        texture1: { value: texture }
+    }
+});
+*/
+
 const scene = new THREE.Scene();
 
 const planetGeometry = new THREE.SphereGeometry(1, 32, 32);
-const planetMaterial = new THREE.MeshBasicMaterial({ color: '#aa11ff' });
+const planetMaterial = new THREE.MeshBasicMaterial({ color: '#acb101'});
 const planet = new THREE.Mesh(planetGeometry, planetMaterial);
 
 const meshGeometry = new THREE.SphereGeometry(50, 32, 32);
@@ -81,27 +100,15 @@ planet.add(mesh);
 planet.position.set(1, 1, 5);
 camera.lookAt(0, 2, 5);
 
-
-// Create the texture and set the pixel data
-const texture = new THREE.CanvasTexture(canvas);
-texture.needsUpdate = true;
-texture.image = imageData;
-
-// Create the shader material
-const skyMaterial = new THREE.ShaderMaterial({
-    vertexShader: skyVertexShader,
-    fragmentShader: skyFragmentShader,
-    side: THREE.BackSide,
-    uniforms: {
-        texture1: { value: texture }
-    }
-});
-
 // Create the skybox geometry
 const skyGeometry = new THREE.BoxGeometry(1000, 1000, 1000);
-
+const texture = new THREE.TextureLoader().load('assets/xs.png');
+const skyMaterial = new THREE.MeshBasicMaterial({
+    map: texture,
+    side: THREE.BackSide,
+});
 // Create the skybox mesh
-const sky = new THREE.Mesh(skyGeometry, skyMaterial);
+const sky = new THREE.Mesh(skyGeometry,skyMaterial);
 
 // Add a floor plane
 const groundGeometry = new THREE.PlaneGeometry(10, 10, 1, 1);
@@ -133,9 +140,9 @@ const clock = new THREE.Clock();
 function render() {
     renderer.render(scene, camera);
 }
-function getElapsedTime() {
-    return clock.getElapsedTime();
-}
+//function getElapsedTime() {
+//    return clock.getElapsedTime();
+//}
 function getCurrentTime() {
     return performance.now() - clock.start();
 }
@@ -147,6 +154,7 @@ const interval = 1000 / fps; // time interval in ms per frame
 
 let previousTime = 0;
 let lag = 0;
+
 function animate() {
     requestAnimationFrame(animate); // Call this function again on the next frame
 
@@ -165,36 +173,17 @@ function animate() {
         lag -= interval;
     }
 
-    const keybuffer = [];
-    keybuffer.push(cf);
+    const buffer = [];
+    buffer.push(cf);
 
     //planet.rotation.y = elapsedTime *=1  ; // Rotate the planet around the y-axis
-    planet.rotation.y = elapsedTime *0.03; // Rotate the mesh around the y-axis
-    const speed = 0.01;
-
-    if ((cf.forward==true)) {
-        //move camera incrementally
-        camera.position.z -= 0.1;
-        //planet.rotation.x += 0;
-    }
-    if ((cf.backward==true)) {
-        camera.position.z += 0.1;
-        camera.rotateOnWorldAxis(new THREE.Vector3(1, 1, 0), 0.3);
-      //  planet.rotation.x += speed;
-    }
-    if ((cf.left==true)) {
-        camera.position.x -= 0.1;
-    //    planet.rotation.x -= speed;
-    }
-    if ((cf.right==true)) {
-        camera.position.x += 0.1;
-   //     planet.rotation.x -= speed;
-    }
-    if(cf.arrup==true){
-        camera.position.y += 0.1;
-
-    }
-    if(keybuffer){console.log(keybuffer[0])}
+    planet.rotation.y = elapsedTime *0.2; // Rotate the mesh around the y-axis
+    //const speed = 0.01;
+    document.addEventListener("keydown", (event) =>
+        handleKeyDown(event, camera)
+    );
+    document.addEventListener("keyup", handleKeyUp);
+    if(buffer){console.log(buffer[0])}
 
 
     renderer.render(scene, camera);
