@@ -1,44 +1,51 @@
 // eventHandler.js
 
 const moveCameraForward = (camera) => {
-    camera.position.z += 0.01;
+    camera.rotation.x += 0.000051;
 };
 
 const moveCameraBackward = (camera) => {
-    camera.position.z -= 0.01;
+    camera.rotation.x -= 0.000051;
 };
 
 const moveCameraLeft = (camera) => {
-    camera.position.x += 0.01;
+    camera.position.x += 0.001;
 };
 
 const moveCameraRight = (camera) => {
-    camera.position.x -= 0.01;
+    camera.position.x -= 0.001;
 };
 
 const moveCameraUp = (camera) => {
-    camera.position.y += 0.02;
+    camera.position.y -= 0.001;
 };
 
 const moveCameraDown = (camera) => {
-    camera.position.y -= 0.02;
+    camera.position.y += 0.001;
 };
 
 const rotateCameraLeft = (camera) => {
-    camera.rotation.y -= 0.02;
+    camera.rotation.y -= 0.000051;
 };
 
 const rotateCameraRight = (camera) => {
-    camera.rotation.y += 0.02;
+    camera.rotation.y += 0.000051;
 };
+const moveCamerazup = (camera) => {
+    camera.position.z += 0.001;
+};
+const moveCamerazown = (camera) => {
+    camera.position.z -= 0.001;
+};
+
 
 const handleKeyDown = (event, camera) => {
     switch (event.code) {
         case "KeyW":
-            moveCameraForward(camera);
+            moveCameraUp(camera);
             break;
         case "KeyS":
-            moveCameraBackward(camera);
+            moveCameraDown(camera);
             break;
         case "KeyA":
             moveCameraLeft(camera);
@@ -46,11 +53,18 @@ const handleKeyDown = (event, camera) => {
         case "KeyD":
             moveCameraRight(camera);
             break;
+        case "KeyQ":
+            moveCamerazup(camera);
+            break;
+        case "KeyX":
+            moveCamerazown(camera);
+            break;
+
         case "ArrowUp":
-            moveCameraUp(camera);
+            moveCameraForward(camera);
             break;
         case "ArrowDown":
-            moveCameraDown(camera);
+            moveCameraBackward(camera);
             break;
         case "ArrowLeft":
             rotateCameraLeft(camera);
@@ -63,8 +77,8 @@ const handleKeyDown = (event, camera) => {
     }
 };
 
-const handleKeyUp = (event) => {
-    // Do something on key up if needed
+const handleKeyUp = (event, camera) => {
+    // Do something on key up if
 };
 
 export { handleKeyDown, handleKeyUp };
