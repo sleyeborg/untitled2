@@ -32,11 +32,11 @@ const camera = createCamera();
 const scene = createScene();
 const planet = planetmake();
 const sky = skymake();
-const ground = groundmake()
+const planet2 = planetmake()
 const pointLight1 = createLights();
 const dirLight = createLights();
 //populate
-scene.add(ground);
+scene.add(planet2);
 scene.add(planet);
 scene.add(sky);
 scene.add(dirLight);
@@ -44,7 +44,8 @@ scene.add(pointLight1);
 //manipulate
 camera.position.set(0, 20, 2);
 planet.position.set(1, 1, 5);
-ground.rotation.x = -Math.PI / 2; // Rotate to lie flat on the ground
+planet2.rotation.x = -Math.PI / 2; // Rotate to lie flat on the ground
+planet2.position.set(3,3,3);
 pointLight1.position.set(10, 5, 400);
 dirLight.position.set(0, 100, 1);
 camera.lookAt(0, 2, 5);
