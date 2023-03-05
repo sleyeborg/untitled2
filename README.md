@@ -7,3 +7,5 @@ the call was =>./node_modules/.bin/webpack -----the rest are options.
 *****************************
 *./node_modules/.bin/webpack*
 *****************************
+
+DIY OR DIE. 

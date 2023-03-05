@@ -1,17 +1,32 @@
 import * as THREE from 'three';
-//import {PhysicsObject} from "../../systems/physics";
+import {PlanetmakePhysics} from "./physics/planetmakephysics";
+import {PlanetDirectory} from "./physics/UniversalScopeWorker";
 
-function planetmake() {
-    const planetGeometry = new THREE.SphereGeometry(1, 32, 32);
-    const planetMaterial = new THREE.MeshBasicMaterial({ color: '#12bb12'});
-    const planet = new THREE.Mesh(planetGeometry, planetMaterial);
- // const planet = new PhysicsObject(1, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0));
-  /*  const meshGeometry = new THREE.SphereGeometry(50, 32, 32);
-    const meshMaterial = new THREE.MeshBasicMaterial({ color: '#ff00ff',wireframe:true });
-    const mesh = new THREE.Mesh(meshGeometry, meshMaterial);
+class Planet extends PlanetmakePhysics {
+    constructor() {
+        const geometry = new THREE.SphereGeometry(1, 32, 32);
+        const material = new THREE.MeshBasicMaterial({ color: '#12bb12' });
+        const mesh = new THREE.Mesh(geometry, material);
+        super(geometry, material, mesh);
+        //this.planetRegistry = [];
+        this.targetposition = new THREE.Vector3();
+        this.mass = 1;
+    }
+    updateTargetPosition(position) {
+        this.targetposition.copy(position);
+    }
 
-    planet.add(mesh);
-*/
-    return (planet);
+    updateMass(mass) {
+        this.mass = mass;
+    }
+
+    getPlanetData() {
+        return {
+            position: this.position.clone(),
+            targetposition: this.targetposition.clone(),
+            mass: this.mass
+        };
+    }
 }
-export {planetmake}
+
+export { Planet };

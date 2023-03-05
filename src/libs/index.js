@@ -10,12 +10,14 @@ import { handleKeyDown, handleKeyUp } from "../eventHandlers.js";
 import {createRenderer} from "./systems/renderer";
 import {skymake} from "./components/worlds/skymake";
 import {groundmake} from "./components/worlds/groundmake";
-import {planetmake} from "./components/worlds/planetmake";
+import {Planet} from "./components/worlds/planetmake";
+import {UniversalScopeWorker}  from "./components/worlds/physics/UniversalScopeWorker";
 
 
 /******************************************************
 * initialize canvas and add event listeners.dom stuff *
 ******************************************************/
+
 const canvas = document.createElement('canvas');
 canvas.width = canvas.height = 3;
 
@@ -30,9 +32,9 @@ document.addEventListener('keyup', onKeyUp);
 const renderer = createRenderer();
 const camera = createCamera();
 const scene = createScene();
-const planet = planetmake();
+const planet = new Planet();
 const sky = skymake();
-const planet2 = planetmake()
+const planet2 = new Planet();
 const pointLight1 = createLights();
 const dirLight = createLights();
 //populate
@@ -46,6 +48,30 @@ camera.position.set(0, 20, 2);
 planet.position.set(1, 1, 5);
 planet2.rotation.x = -Math.PI / 2; // Rotate to lie flat on the ground
 planet2.position.set(3,3,3);
+
+planet.changemass(5000);
+
+const uniworker = new UniversalScopeWorker();
+uniworker.getScene(scene);
+const meshes = uniworker.getMeshes();
+uniworker.addPlanetToDirectory(planet);
+uniworker.addPlanetToDirectory(planet2);
+console.log("Planet directory:", JSON.stringify(uniworker.planetDirectory));
+console.log('some liniear change');
+planet.changemass(1111);
+planet2.changemass(2222);
+console.log('before planetdirectory update : '+uniworker.planetDirectory );
+uniworker.removePlanetFromDirectory(planet);
+uniworker.removePlanetFromDirectory(planet2);
+console.log('clear');
+uniworker.addPlanetToDirectory(planet);
+uniworker.addPlanetToDirectory(planet2);
+console.log("Planet directory:", JSON.stringify(uniworker.planetDirectory));
+
+
+
+
+
 pointLight1.position.set(10, 5, 400);
 dirLight.position.set(0, 100, 1);
 camera.lookAt(0, 2, 5);
@@ -68,6 +94,7 @@ let previousTime = 0;
 let lag = 0;
 
 function animate() {
+
     requestAnimationFrame(animate); // Call this function again on the next frame
 
     let cf = getCntrlflags();
@@ -89,7 +116,7 @@ function animate() {
     buffer.push(cf);
 
     //planet.rotation.y = elapsedTime *=1  ; // Rotate the planet around the y-axis
-    planet.rotation.y = elapsedTime *0.2; // Rotate the mesh around the y-axis
+    planet.rotation.y = elapsedTime * 0.2; // Rotate the mesh around the y-axis
     //const speed = 0.01;
     document.addEventListener("keydown", (event) =>
         handleKeyDown(event, camera)
@@ -97,7 +124,13 @@ function animate() {
     document.addEventListener("keyup", handleKeyUp);
 
 
+
     renderer.render(scene, camera);
+
+}
+function update(){
+
+
 }
 
 
