@@ -42,11 +42,15 @@ class Planet extends PlanetmakePhysics {
 
 
     update(uniworker) {
-        //const nearPlanets = uniworker.planetDirectory; //assuming you have a getPlanetDirectory() function
         const uni = uniworker.planetDirectory;
-        console.log(uni);
+        for (let key in uni) {
+
+            console.log(uni[key]);
+
+        }
         this.position.x += 0.001;
     }
+
 
 }
 
