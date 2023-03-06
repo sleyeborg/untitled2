@@ -134,9 +134,10 @@ function update(){
     const mesh = uniworker.getMeshes(scene);
 
    const planetList = scene.children.filter((child) => child instanceof Planet);
-    planetList.forEach((planet) => {planet.checkPlanetDirectory(uniworker);console.log("before"+JSON.stringify(planet.planetRegistry))});
-    planetList.forEach((planet)=>{planet.update(mesh);console.log("during"+JSON.stringify(planet.planetRegistry))});
-    planetList.forEach((planet)=>{uniworker.removePlanetFromDirectory(planet);console.log("after"+JSON.stringify(planet.planetRegistry))});
+  // planetList.forEach((planet)=>{uniworker.addPlanetToDirectory(planet);console.log("UNIWORKERADD"+JSON.stringify(planet.planetRegistry))});
+   //planetList.forEach((planet) => {planet.checkPlanetDirectory(uniworker);console.log("PLANETCHECK"+JSON.stringify(planet.planetRegistry))});
+    planetList.forEach((planet)=>{planet.update(uniworker)});
+   // planetList.forEach((planet)=>{uniworker.removePlanetFromDirectory(planet);console.log("UNIWORKERREMOVE"+JSON.stringify(planet.planetRegistry))});
 
    //nonono planetList.forEach((planet)=>{planet.update(uniworker)});
 
