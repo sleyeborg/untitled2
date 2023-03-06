@@ -35,8 +35,19 @@ class UniversalScopeWorker {
             this.scene.traverse((object) => {
                 if (object instanceof THREE.Mesh) {
                     meshes.push(object);
+                        const data = {
+                            uuid: object.uuid,
+                            position: object.position.toArray(),
+                            rotation: object.rotation.toArray(),
+                            scale: object.scale.toArray(),
+                            // add any other relevant properties here
+                        };
+                        this.planetDirectory[object.uuid] = data;
+                        // Queue write to update all nested scopes
+                    }
+
                 }
-            });
+            );
         }
         return meshes;
     }

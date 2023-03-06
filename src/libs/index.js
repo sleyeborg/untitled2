@@ -35,9 +35,11 @@ const scene = createScene();
 const planet = new Planet();
 const sky = skymake();
 const planet2 = new Planet();
+const planet3 = new Planet();
 const pointLight1 = createLights();
 const dirLight = createLights();
 //populate
+scene.add(planet3);
 scene.add(planet2);
 scene.add(planet);
 scene.add(sky);
@@ -48,26 +50,31 @@ camera.position.set(0, 20, 2);
 planet.position.set(1, 1, 5);
 planet2.rotation.x = -Math.PI / 2; // Rotate to lie flat on the ground
 planet2.position.set(3,3,3);
+planet3.position.set(4,4,4);
 
 planet.changemass(5000);
 
+
+
+
 const uniworker = new UniversalScopeWorker();
 uniworker.getScene(scene);
-const meshes = uniworker.getMeshes();
-uniworker.addPlanetToDirectory(planet);
-uniworker.addPlanetToDirectory(planet2);
-console.log("Planet directory:", JSON.stringify(uniworker.planetDirectory));
-console.log('some liniear change');
-planet.changemass(1111);
-planet2.changemass(2222);
-console.log('before planetdirectory update : '+uniworker.planetDirectory );
-uniworker.removePlanetFromDirectory(planet);
-uniworker.removePlanetFromDirectory(planet2);
-console.log('clear');
-uniworker.addPlanetToDirectory(planet);
-uniworker.addPlanetToDirectory(planet2);
-console.log("Planet directory:", JSON.stringify(uniworker.planetDirectory));
+const meshes = uniworker.getMeshes()
+//const meshes = uniworker.getMeshes();
+//planet2.checkPlanetDirectory(uniworker);
+//console.log("ASDasasP"+JSON.stringify(planet2.planetRegistry));
 
+//planet3.checkPlanetDirectory(uniworker);
+//console.log("33P3"+planet3.planetRegistry);
+//uniworker.removePlanetFromDirectory(planet);
+
+//uniworker.addPlanetToDirectory(planet);
+//uniworker.addPlanetToDirectory(planet2);
+//console.log("PlanetDirectory:", JSON.stringify(uniworker.planetDirectory));
+//planet.checkPlanetDirectory(uniworker);
+//console.log("ASDP"+JSON.stringify(planet.planetRegistry));
+//console.log("asdfaa"+JSON.stringify(planet2.planetRegistry));
+//console.log("a"+JSON.stringify(planet3.planetRegistry));
 
 
 
@@ -97,20 +104,14 @@ function animate() {
 
     requestAnimationFrame(animate); // Call this function again on the next frame
 
+
     let cf = getCntrlflags();
     const elapsedTime = clock.getElapsedTime(); // Get the time elapsed since the last frame
     const currentTime = getCurrentTime();
     const elapsed = currentTime - previousTime;
     previousTime = currentTime;
     lag += elapsed;
-
-    while (lag >= interval) {
-        // update game state and render
-        //update();
-        render();
-
-        lag -= interval;
-    }
+    update();
 
     const buffer = [];
     buffer.push(cf);
@@ -129,7 +130,15 @@ function animate() {
 
 }
 function update(){
+    //return an object with all the planets in the  scene
+    const mesh = uniworker.getMeshes(scene);
 
+   const planetList = scene.children.filter((child) => child instanceof Planet);
+    planetList.forEach((planet) => {planet.checkPlanetDirectory(uniworker);console.log("before"+JSON.stringify(planet.planetRegistry))});
+    planetList.forEach((planet)=>{planet.update(mesh);console.log("during"+JSON.stringify(planet.planetRegistry))});
+    planetList.forEach((planet)=>{uniworker.removePlanetFromDirectory(planet);console.log("after"+JSON.stringify(planet.planetRegistry))});
+
+   //nonono planetList.forEach((planet)=>{planet.update(uniworker)});
 
 }
 
