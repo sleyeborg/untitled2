@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import {PlanetmakePhysics} from "./physics/planetmakephysics";
 import {PlanetDirectory} from "./physics/UniversalScopeWorker";
+import {Vector3} from "three";
 
 class Planet extends PlanetmakePhysics {
     constructor() {
@@ -43,11 +44,15 @@ class Planet extends PlanetmakePhysics {
 
     update(uniworker) {
         const uni = uniworker.planetDirectory;
+        const jar = [];
         for (let key in uni) {
 
-            console.log(uni[key]);
+            //console.log(uni[key]);
+            jar.push(uni[key]);
 
         }
+
+        console.log(jar);
         this.position.x += 0.001;
     }
 

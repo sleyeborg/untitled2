@@ -129,6 +129,7 @@ function animate() {
     renderer.render(scene, camera);
 
 }
+
 function update(){
     //return an object with all the planets in the  scene
     const mesh = uniworker.getMeshes(scene);
