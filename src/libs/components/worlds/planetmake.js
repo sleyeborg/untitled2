@@ -51,8 +51,9 @@ class Planet extends PlanetmakePhysics {
             jar.push(uni[key]);
 
         }
-
-        super.updatePlanetPositionMass(jar);
+        const nextpo = this.nextposition(uniworker)
+        console.log(nextpo);
+        this.position.x += 0.001;
     }
 
 
