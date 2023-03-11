@@ -1,6 +1,7 @@
 // universalScopeWorker.js
 
 import * as THREE from 'three';
+import {Vector3} from "three";
 
 class UniversalScopeWorker {
     constructor() {
@@ -34,10 +35,14 @@ class UniversalScopeWorker {
         if (this.scene) {
             this.scene.traverse((object) => {
                 if (object instanceof THREE.Mesh) {
+                    let n = new Vector3();
+                    //copy object.position into n the new vector3
+                    n.copy(object.position);
                     meshes.push(object);
                         const data = {
+                            mass: 1,
                             uuid: object.uuid,
-                            position: object.position.toArray(),
+                            position: n,
                             rotation: object.rotation.toArray(),
                             scale: object.scale.toArray(),
                             // add any other relevant properties here
@@ -51,6 +56,7 @@ class UniversalScopeWorker {
         }
         return meshes;
     }
+
 
     // Other methods to interact with the directory
 }

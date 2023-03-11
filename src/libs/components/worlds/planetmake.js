@@ -52,8 +52,7 @@ class Planet extends PlanetmakePhysics {
 
         }
 
-        console.log(jar);
-        this.position.x += 0.001;
+        super.updatePlanetPositionMass(jar);
     }
 
 
