@@ -4,15 +4,16 @@ import {PlanetDirectory} from "./physics/UniversalScopeWorker";
 import {Vector3} from "three";
 
 class Planet extends PlanetmakePhysics {
-    constructor() {
+    constructor(mass) {
         const geometry = new THREE.SphereGeometry(1, 32, 32);
         const material = new THREE.MeshBasicMaterial({ color: '#12bb12' });
         const mesh = new THREE.Mesh(geometry, material);
         super(geometry, material, mesh);
         this.planetRegistry = {};
         this.targetposition = new THREE.Vector3();
-        this.mass = 1;
-    }
+        this.mass = mass || 1;
+        this.acceleration = new THREE.Vector3(0, 0, -0.981);
+        }
 
     getPlanetData() {
         return {
@@ -43,17 +44,19 @@ class Planet extends PlanetmakePhysics {
 
 
     update(uniworker) {
+        //update the position of this planet.
+        //get the planetDirectory from the uniworker instance of UniversalScopeWorker.js
         const uni = uniworker.planetDirectory;
+        //make an array container to contain entries parsed from uni.
         const jar = [];
+        //iterate over the entries in uni.
         for (let key in uni) {
-
-            //console.log(uni[key]);
+            //push the entries into jar.
             jar.push(uni[key]);
-
         }
-
-        console.log(jar);
-        this.position.x += 0.001;
+        //update the planets position with the planetmakephysics call to update position.
+        //jar is normalized data.
+        super.updatePlanetPositionMass(jar)
     }
 
 

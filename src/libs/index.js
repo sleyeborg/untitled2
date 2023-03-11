@@ -33,9 +33,12 @@ const renderer = createRenderer();
 const camera = createCamera();
 const scene = createScene();
 const planet = new Planet();
+planet.changemass(1000);
 const sky = skymake();
 const planet2 = new Planet();
+planet2.changemass(1100);
 const planet3 = new Planet();
+planet3.changemass(10);
 const pointLight1 = createLights();
 const dirLight = createLights();
 //populate
@@ -47,12 +50,10 @@ scene.add(dirLight);
 scene.add(pointLight1);
 //manipulate
 camera.position.set(0, 20, 2);
-planet.position.set(1, 1, 5);
+planet.position.set(1, 1, 4);
 planet2.rotation.x = -Math.PI / 2; // Rotate to lie flat on the ground
-planet2.position.set(3,3,3);
+planet2.position.set(3,4,3);
 planet3.position.set(4,4,4);
-
-planet.changemass(5000);
 
 
 
