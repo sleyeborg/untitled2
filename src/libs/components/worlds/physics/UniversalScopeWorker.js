@@ -35,12 +35,14 @@ class UniversalScopeWorker {
         if (this.scene) {
             this.scene.traverse((object) => {
                 if (object instanceof THREE.Mesh) {
-                    let n = new Vector3();
-                    //copy object.position into n the new vector3
-                    n.copy(object.position);
-                    meshes.push(object);
+                    if (object.mass!==undefined) {
+                        let n = new Vector3();
+                        //copy object.position into n the new vector3
+                        n.copy(object.position);
+                        meshes.push(object);
                         const data = {
-                            mass: 1,
+                            velocity: new THREE.Vector3(),
+                            mass: object.mass,
                             uuid: object.uuid,
                             position: n,
                             rotation: object.rotation.toArray(),
@@ -49,12 +51,15 @@ class UniversalScopeWorker {
                         };
                         this.planetDirectory[object.uuid] = data;
                         // Queue write to update all nested scopes
-                    }
+                      //  console.log('DEFINED',data);
+                    } }//else console.log('undefined');
 
                 }
             );
         }
+       // console.log(meshes);
         return meshes;
+
     }
 
 

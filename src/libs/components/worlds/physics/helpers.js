@@ -10,9 +10,16 @@ function createVector(pointA, pointB) {
 // helpers.js
 
 function calculateDirectionVector(currentPosition, targetPosition) {
-    const direction = new THREE.Vector3().copy(targetPosition).sub(currentPosition).normalize();
+    const direction = new THREE.Vector3();
+    if(targetPosition){
+    direction.x = targetPosition.x - currentPosition.x;
+    direction.y = targetPosition.y - currentPosition.y;
+    direction.z = targetPosition.z - currentPosition.z;
+    direction.normalize();
     return direction;
+    }
 }
+
 
 
 

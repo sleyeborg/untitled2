@@ -4,14 +4,16 @@ import {PlanetDirectory} from "./physics/UniversalScopeWorker";
 import {Vector3} from "three";
 
 class Planet extends PlanetmakePhysics {
-    constructor() {
+    constructor(color,velocity,mass) {
         const geometry = new THREE.SphereGeometry(1, 32, 32);
-        const material = new THREE.MeshBasicMaterial({ color: '#12bb12' });
+        const material = new THREE.MeshBasicMaterial({ color: color });
         const mesh = new THREE.Mesh(geometry, material);
         super(geometry, material, mesh);
         this.planetRegistry = {};
         this.targetposition = new THREE.Vector3();
-        this.mass = 1;
+        this.mass = mass;
+        //velocity should be a vector3
+        this.velocity = new THREE.Vector3(velocity,0,0);
     }
 
     getPlanetData() {
@@ -52,7 +54,8 @@ class Planet extends PlanetmakePhysics {
 
         }
 
-        super.updatePlanetPositionMass(jar);
+        super.updatePlanetPositions(jar);
+       // console.log("asasas",this.position)
     }
 
 

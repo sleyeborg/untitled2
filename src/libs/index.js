@@ -32,13 +32,10 @@ document.addEventListener('keyup', onKeyUp);
 const renderer = createRenderer();
 const camera = createCamera();
 const scene = createScene();
-const planet = new Planet();
-planet.changemass(5000);
+const planet = new Planet("yellow",1,50);
 const sky = skymake();
-const planet2 = new Planet();
-planet2.changemass(4000);
-const planet3 = new Planet();
-planet3.changemass(3000);
+const planet2 = new Planet("red",9,4);
+const planet3 = new Planet("blue",90,30);
 const pointLight1 = createLights();
 const dirLight = createLights();
 //populate
@@ -49,13 +46,14 @@ scene.add(sky);
 scene.add(dirLight);
 scene.add(pointLight1);
 //manipulate
-camera.position.set(0, 40, -40);
-planet.position.set(1, 1, 5);
+camera.position.set(0, 40, -60);
+planet.position.set(0, 0, 0);
 planet2.rotation.x = -Math.PI / 2; // Rotate to lie flat on the ground
 planet2.position.set(3,3,3);
 planet3.position.set(4,4,4);
 
-planet.changemass(5000);
+
+
 
 
 
@@ -136,7 +134,7 @@ function animate() {
 function update(){
     //return an object with all the planets in the  scene
     const mesh = uniworker.getMeshes(scene);
-
+   // console.log("meshes",mesh);
    const planetList = scene.children.filter((child) => child instanceof Planet);
   // planetList.forEach((planet)=>{uniworker.addPlanetToDirectory(planet);console.log("UNIWORKERADD"+JSON.stringify(planet.planetRegistry))});
    //planetList.forEach((planet) => {planet.checkPlanetDirectory(uniworker);console.log("PLANETCHECK"+JSON.stringify(planet.planetRegistry))});

@@ -7,6 +7,7 @@ function skymake() {
     const mesh = new THREE.Mesh(meshGeometry, meshMaterial);
 // Create the skybox mesh
     const sky = new THREE.Mesh(meshGeometry,meshMaterial);
+
     return (sky);
 }
 export {skymake}
