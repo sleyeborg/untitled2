@@ -4,7 +4,7 @@ import {PlanetDirectory} from "./physics/UniversalScopeWorker";
 import {Vector3} from "three";
 
 class Planet extends PlanetmakePhysics {
-    constructor() {
+    constructor(color) {
         const geometry = new THREE.SphereGeometry(1, 32, 32);
         const material = new THREE.MeshBasicMaterial({ color: '#12bb12' });
         const mesh = new THREE.Mesh(geometry, material);
@@ -13,7 +13,10 @@ class Planet extends PlanetmakePhysics {
         this.targetposition = new THREE.Vector3();
         this.accelleration = 1;
         this.mass = 1;
-        this.velocity = 0.01
+        this.velocity = 0.01;
+
+        //change color of planet
+        this.material.color.set(color);
     }
 
     getPlanetData() {

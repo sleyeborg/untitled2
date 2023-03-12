@@ -32,10 +32,10 @@ document.addEventListener('keyup', onKeyUp);
 const renderer = createRenderer();
 const camera = createCamera();
 const scene = createScene();
-const planet = new Planet();
+const planet = new Planet("red");
 const sky = skymake();
-const planet2 = new Planet();
-const planet3 = new Planet();
+const planet2 = new Planet("yellow");
+const planet3 = new Planet("blue");
 const pointLight1 = createLights();
 const dirLight = createLights();
 //populate

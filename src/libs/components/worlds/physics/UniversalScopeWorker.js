@@ -44,6 +44,7 @@ class UniversalScopeWorker {
                             position: object.position.toArray(),
                             rotation: object.rotation.toArray(),
                             scale: object.scale.toArray(),
+
                             // add any other relevant properties here
                         };
                         this.planetDirectory[object.uuid] = data;
