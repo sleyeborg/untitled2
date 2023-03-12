@@ -1,7 +1,7 @@
 // universalScopeWorker.js
 
 import * as THREE from 'three';
-import {Vector3} from "three";
+import {PlanetmakePhysics} from "./planetmakephysics";
 
 class UniversalScopeWorker {
     constructor() {
@@ -34,15 +34,14 @@ class UniversalScopeWorker {
         const meshes = [];
         if (this.scene) {
             this.scene.traverse((object) => {
-                if (object instanceof THREE.Mesh) {
-                    let n = new Vector3();
-                    //copy object.position into n the new vector3
-                    n.copy(object.position);
+                if (object instanceof PlanetmakePhysics) {
                     meshes.push(object);
                         const data = {
-                            mass: 1,
+                            velocity : object.velocity,
+                            accelleration: object.accelleration,
+                            mass: object.mass,
                             uuid: object.uuid,
-                            position: n,
+                            position: object.position.toArray(),
                             rotation: object.rotation.toArray(),
                             scale: object.scale.toArray(),
                             // add any other relevant properties here
@@ -56,7 +55,6 @@ class UniversalScopeWorker {
         }
         return meshes;
     }
-
 
     // Other methods to interact with the directory
 }
