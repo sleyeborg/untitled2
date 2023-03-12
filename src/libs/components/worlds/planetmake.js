@@ -11,7 +11,9 @@ class Planet extends PlanetmakePhysics {
         super(geometry, material, mesh);
         this.planetRegistry = {};
         this.targetposition = new THREE.Vector3();
+        this.accelleration = 1;
         this.mass = 1;
+        this.velocity = 0.01
     }
 
     getPlanetData() {
@@ -51,9 +53,15 @@ class Planet extends PlanetmakePhysics {
             jar.push(uni[key]);
 
         }
-        const nextpo = this.nextposition(uniworker)
-        console.log(nextpo);
-        this.position.x += 0.001;
+        const mmass = this.findMassivePlanets(jar);
+        console.log("mmass ",mmass);
+
+        const nextposition = this.nextposition(mmass);
+        console.log("smullsblackson     ",nextposition);
+        //this.position.x+=nextposition.x;
+        //this.position.y+=nextposition.y;
+        //this.position.z+=nextposition.z;
+        //this.position.x += 0.001;
     }
 
 
