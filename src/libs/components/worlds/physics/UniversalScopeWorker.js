@@ -1,6 +1,7 @@
 // universalScopeWorker.js
 
 import * as THREE from 'three';
+import {PlanetmakePhysics} from "./planetmakephysics";
 
 class UniversalScopeWorker {
     constructor() {
@@ -33,9 +34,12 @@ class UniversalScopeWorker {
         const meshes = [];
         if (this.scene) {
             this.scene.traverse((object) => {
-                if (object instanceof THREE.Mesh) {
+                if (object instanceof PlanetmakePhysics) {
                     meshes.push(object);
                         const data = {
+                            velocity : object.velocity,
+                            accelleration: object.accelleration,
+                            mass: object.mass,
                             uuid: object.uuid,
                             position: object.position.toArray(),
                             rotation: object.rotation.toArray(),

@@ -47,12 +47,15 @@ scene.add(dirLight);
 scene.add(pointLight1);
 //manipulate
 camera.position.set(0, 20, 2);
-planet.position.set(1, 1, 5);
+
 planet2.rotation.x = -Math.PI / 2; // Rotate to lie flat on the ground
 planet2.position.set(3,3,3);
 planet3.position.set(4,4,4);
+planet.position.set(1, 1, 5);
 
-planet.changemass(5000);
+planet.changemass(5);
+planet2.changemass(3);
+planet3.changemass(2);
 
 
 
@@ -94,13 +97,14 @@ function getCurrentTime() {
 //setupKeyControls();
 //const keyCombos = getKeys();
 
-const fps = 54; // target frame rate
-const interval = 1000 / fps; // time interval in ms per frame
+const fps = 59; // target frame rate
+const interval = 10000 / fps; // time interval in ms per frame
 
 let previousTime = 0;
 let lag = 0;
 
 function animate() {
+
 
     requestAnimationFrame(animate); // Call this function again on the next frame
 
