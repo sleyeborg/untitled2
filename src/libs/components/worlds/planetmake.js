@@ -11,10 +11,9 @@ class Planet extends PlanetmakePhysics {
         super(geometry, material, mesh);
         this.planetRegistry = {};
         this.targetposition = new THREE.Vector3();
-        this.accelleration = 1;
+        this.acceleration = 1;
         this.mass = 1;
-        this.velocity = 0.01;
-
+        this.velocity = new THREE.Vector3();
         //change color of planet
         this.material.color.set(color);
     }
@@ -57,10 +56,14 @@ class Planet extends PlanetmakePhysics {
 
         }
         const mmass = this.findMassivePlanets(jar);
-        console.log("mmass ",mmass);
+        //console.log("mmass ",mmass);
 
         const nextposition = this.nextposition(mmass);
-        console.log("smullsblackson     ",nextposition);
+
+        //this.position.copy(nextposition);
+
+        console.log("NEXTPOSITION",nextposition);
+        //console.log("smullsblackson     ",nextposition);
         //this.position.x+=nextposition.x;
         //this.position.y+=nextposition.y;
         //this.position.z+=nextposition.z;

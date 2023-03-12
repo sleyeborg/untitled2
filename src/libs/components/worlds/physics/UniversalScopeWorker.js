@@ -38,7 +38,7 @@ class UniversalScopeWorker {
                     meshes.push(object);
                         const data = {
                             velocity : object.velocity,
-                            accelleration: object.accelleration,
+                            acceleration: object.acceleration,
                             mass: object.mass,
                             uuid: object.uuid,
                             position: object.position.toArray(),

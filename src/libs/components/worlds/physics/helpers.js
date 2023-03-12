@@ -3,10 +3,11 @@ function calculateDirectionVector(currentPosition, otherPosition) {
     const isVector3 = currentPosition.x ? true : false;
     const isVector = otherPosition.x ? true : false;
     if(isVector&&isVector3){
-    const direction = new THREE.Vector3();
-    direction.subVectors(otherPosition, currentPosition);
-    direction.normalize();
-    return direction;}else{ return 0}
+        const directionvec = new THREE.Vector3().subVectors(otherPosition, currentPosition).normalize();
+
+       // directionvec.subVectors(otherPosition, currentPosition);
+    //directionvec.normalize();
+    return directionvec;}else{ return 0}
 }
 
 function calculateDistance(currentPosition, otherPosition) {
@@ -25,7 +26,7 @@ function calculateGravForce(planet1position, planet2position, planet1mass, plane
     const m2 = planet2mass;
     const r = calculateDistance(planet1position, planet2position);
     if(r === NaN){return 0}
-    console.log("r         r  r r  r  r  r",r);
+   // console.log("r         r  r r  r  r  r",r);
 
     if (r === 0) {
         return 0;
