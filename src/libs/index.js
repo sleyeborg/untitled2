@@ -5,14 +5,14 @@ import * as THREE from 'three';
 import {createCamera} from "./components/camera";
 import {createScene} from "./components/scene";
 import {createLights} from "./components/lights";
-import { getCntrlflags, onKeyUp, onKeyDown } from './controls.js';
-import { handleKeyDown, handleKeyUp } from "../eventHandlers.js";
 import {createRenderer} from "./systems/renderer";
 import {skymake} from "./components/worlds/skymake";
-import {groundmake} from "./components/worlds/groundmake";
 import {Planet} from "./components/worlds/planetmake";
 import {UniversalScopeWorker}  from "./components/worlds/physics/UniversalScopeWorker";
 
+
+import {Tablet} from "./components/worlds/Tablet";
+import CameraController from "../eventhandlers.js";
 
 /******************************************************
 * initialize canvas and add event listeners.dom stuff *
@@ -22,8 +22,6 @@ const canvas = document.createElement('canvas');
 canvas.width = canvas.height = 3;
 
 
-document.addEventListener('keydown', onKeyDown);
-document.addEventListener('keyup', onKeyUp);
 
 /******************************************************
  * render pipeline?                                   *
@@ -34,12 +32,14 @@ const camera = createCamera();
 const scene = createScene();
 const planet = new Planet("red");
 const sky = skymake();
+
 const planet2 = new Planet("yellow");
 const planet3 = new Planet("blue");
 const planet4 = new Planet("orange");
 const pointLight1 = createLights();
 const dirLight = createLights();
 //populate
+
 scene.add(planet4);
 scene.add(planet3);
 scene.add(planet2);
@@ -63,10 +63,21 @@ planet3.changemass(0.002);
 
 
 
+const camcntrl =  new CameraController(camera);
+
+
+
+
 
 const uniworker = new UniversalScopeWorker();
 uniworker.getScene(scene);
 const meshes = uniworker.getMeshes()
+
+
+const tablet = new Tablet(uniworker);
+scene.add(tablet.getThisMesh());
+//console.log(tablet);
+
 //const meshes = uniworker.getMeshes();
 //planet2.checkPlanetDirectory(uniworker);
 //console.log("ASDasasP"+JSON.stringify(planet2.planetRegistry));
@@ -98,8 +109,7 @@ function render() {
 function getCurrentTime() {
     return performance.now() - clock.start();
 }
-//setupKeyControls();
-//const keyCombos = getKeys();
+
 
 const fps = 59; // target frame rate
 const interval = 10000 / fps; // time interval in ms per frame
@@ -113,7 +123,7 @@ function animate() {
     requestAnimationFrame(animate); // Call this function again on the next frame
 
 
-    let cf = getCntrlflags();
+    //let cf = getCntrlflags();
     const elapsedTime = clock.getElapsedTime(); // Get the time elapsed since the last frame
     const currentTime = getCurrentTime();
     const elapsed = currentTime - previousTime;
@@ -121,16 +131,27 @@ function animate() {
     lag += elapsed;
     update();
 
-    const buffer = [];
-    buffer.push(cf);
+    //const buffer = [];
+   // buffer.push(cf);
 
     //planet.rotation.y = elapsedTime *=1  ; // Rotate the planet around the y-axis
     planet.rotation.y = elapsedTime * 0.2; // Rotate the mesh around the y-axis
     //const speed = 0.01;
-    document.addEventListener("keydown", (event) =>
-        handleKeyDown(event, camera)
-    );
-    document.addEventListener("keyup", handleKeyUp);
+   // document.addEventListener("keydown", (event) =>
+    //    handleKeyDown(event, camera)
+    //);
+  //  document.addEventListener("keyup", handleKeyUp);
+    document.addEventListener('keydown', (event) => {
+        camcntrl.handleKeyDown(event);
+        if (event.keyCode === 27) {
+            tablet.toggleVisibility();
+            //console.log(tablet.visible);
+        }
+    });
+
+    document.addEventListener('keyup', (event) => {
+        camcntrl.handleKeyUp(event);
+    });
 
 
 
@@ -147,8 +168,7 @@ function update(){
    //planetList.forEach((planet) => {planet.checkPlanetDirectory(uniworker);console.log("PLANETCHECK"+JSON.stringify(planet.planetRegistry))});
     planetList.forEach((planet)=>{planet.update(uniworker)});
    // planetList.forEach((planet)=>{uniworker.removePlanetFromDirectory(planet);console.log("UNIWORKERREMOVE"+JSON.stringify(planet.planetRegistry))});
-
-   //nonono planetList.forEach((planet)=>{planet.update(uniworker)});
+    tablet.updateLocation(camera);
 
 }
 

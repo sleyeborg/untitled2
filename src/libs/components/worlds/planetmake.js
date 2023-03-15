@@ -62,7 +62,7 @@ class Planet extends PlanetmakePhysics {
 
         //this.position.copy(nextposition);
 
-        console.log("NEXTPOSITION",nextposition);
+       // console.log("NEXTPOSITION",nextposition);
         //console.log("smullsblackson     ",nextposition);
         //this.position.x+=nextposition.x;
         //this.position.y+=nextposition.y;
